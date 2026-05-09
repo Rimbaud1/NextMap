@@ -77,28 +77,36 @@ export default function MapMarker({ map, markers, onMarkerClick }: MapMarkerProp
         cursor: pointer;
         display: flex; align-items: center; justify-content: center;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
+        pointer-events: auto;
+        position: relative;
+        z-index: 10;
       `;
       el.innerHTML = markerIcons[cat] || markerIcons.search;
+      const svg = el.querySelector("svg");
+      if (svg) svg.style.pointerEvents = "none";
       el.title = marker.label;
 
-      el.addEventListener("mouseenter", () => {
+      el.addEventListener("mouseenter", (e) => {
+        e.stopPropagation();
         el.style.transform = "scale(1.2)";
         el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
       });
-      el.addEventListener("mouseleave", () => {
+      el.addEventListener("mouseleave", (e) => {
+        e.stopPropagation();
         el.style.transform = "scale(1)";
         el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
       });
 
-      const clickHandler = () => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
         onMarkerClick?.(marker);
         marker.onClick?.();
-      };
-      el.addEventListener("click", clickHandler);
+      });
 
       const m = new maplibregl.Marker({ element: el })
         .setLngLat([marker.lng, marker.lat])
         .addTo(map);
+      m.getElement().style.pointerEvents = "auto";
 
       markersRef.current.push(m);
     });
