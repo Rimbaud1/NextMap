@@ -34,6 +34,8 @@ export default function RootLayout({
       </head>
       <body className="h-full flex flex-col">
         {children}
+        {/* Service worker disabled in dev */}
+        {/*
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -45,6 +47,7 @@ export default function RootLayout({
             `,
           }}
         />
+        */}
       </body>
     </html>
   );
