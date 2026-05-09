@@ -24,6 +24,10 @@ export default function MapView({ onMapReady }: MapViewProps) {
       minZoom: MAP_DEFAULTS.minZoom,
       maxZoom: MAP_DEFAULTS.maxZoom,
       attributionControl: false,
+      transformRequest: (url) => ({
+        url,
+        headers: { "User-Agent": "NextMap/1.0 (web app)" },
+      }),
     });
 
     map.addControl(
