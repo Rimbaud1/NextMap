@@ -62,6 +62,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): st
 
 export default function HomePage() {
   const mapRef = useRef<Map | null>(null);
+  const [mapInstance, setMapInstance] = useState<Map | null>(null);
   const [locating, setLocating] = useState(false);
   const [showPOIs, setShowPOIs] = useState(false);
   const [favoritesOpen, setFavoritesOpen] = useState(false);
@@ -71,6 +72,7 @@ export default function HomePage() {
 
   const handleMapReady = useCallback((map: Map) => {
     mapRef.current = map;
+    setMapInstance(map);
   }, []);
 
   useEffect(() => {
@@ -246,7 +248,7 @@ export default function HomePage() {
         <MapView onMapReady={handleMapReady} />
 
         <MapControls
-          map={mapRef.current}
+          map={mapInstance}
           onLocate={handleLocate}
           locating={locating}
           showPOIs={showPOIs}
@@ -254,7 +256,7 @@ export default function HomePage() {
         />
 
         <MapMarker
-          map={mapRef.current}
+          map={mapInstance}
           markers={markers}
           onMarkerClick={handleMarkerClick}
         />
