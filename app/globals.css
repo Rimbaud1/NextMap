@@ -63,3 +63,12 @@ body,
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Marker hover effect */
+.nextmap-marker {
+  touch-action: manipulation;
+}
+.nextmap-marker:hover {
+  transform: scale(1.2) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+}

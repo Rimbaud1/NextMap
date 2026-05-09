@@ -68,6 +68,7 @@ export default function MapMarker({ map, markers, onMarkerClick }: MapMarkerProp
       const size = isMe ? 28 : 24;
 
       const el = document.createElement("div");
+      el.className = "nextmap-marker";
       el.style.cssText = `
         width: ${size}px; height: ${size}px;
         background: ${color};
@@ -86,21 +87,38 @@ export default function MapMarker({ map, markers, onMarkerClick }: MapMarkerProp
       if (svg) svg.style.pointerEvents = "none";
       el.title = marker.label;
 
-      el.addEventListener("mouseenter", (e) => {
-        e.stopPropagation();
-        el.style.transform = "scale(1.2)";
-        el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
-      });
-      el.addEventListener("mouseleave", (e) => {
-        e.stopPropagation();
-        el.style.transform = "scale(1)";
-        el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
+      let downX = 0;
+      let downY = 0;
+
+      el.addEventListener("mousedown", (e) => {
+        downX = e.clientX;
+        downY = e.clientY;
       });
 
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        onMarkerClick?.(marker);
-        marker.onClick?.();
+      el.addEventListener("mouseup", (e) => {
+        const dx = Math.abs(e.clientX - downX);
+        const dy = Math.abs(e.clientY - downY);
+        if (dx < 5 && dy < 5) {
+          onMarkerClick?.(marker);
+          marker.onClick?.();
+        }
+      });
+
+      el.addEventListener("touchstart", (e) => {
+        const t = e.changedTouches[0];
+        downX = t.clientX;
+        downY = t.clientY;
+      });
+
+      el.addEventListener("touchend", (e) => {
+        const t = e.changedTouches[0];
+        const dx = Math.abs(t.clientX - downX);
+        const dy = Math.abs(t.clientY - downY);
+        if (dx < 10 && dy < 10) {
+          e.preventDefault();
+          onMarkerClick?.(marker);
+          marker.onClick?.();
+        }
       });
 
       const m = new maplibregl.Marker({ element: el })
